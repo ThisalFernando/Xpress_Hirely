@@ -1,0 +1,56 @@
+import React, { useState } from "react";
+import axios from "axios";
+import Spinner from "../components/Spinner";
+import { useNavigate, useParams } from "react-router-dom";
+import "./Delete.css";
+import { Link } from "react-router-dom";
+import { AiOutlineEdit } from "react-icons/ai";
+import { BsInfoCircle } from "react-icons/bs";
+import { MdOutlineDelete } from "react-icons/md";
+import BackButtonP from "../components/BackButtonP";
+
+const RAW_BASE = import.meta.env.VITE_REACT_APP_BACKEND_BASEURL;
+const BASE_URL = (RAW_BASE || "").replace(/\/$/, "");
+
+const Delete = () => {
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const { id } = useParams();
+
+  const DeleteF = () => {
+    setLoading(true);
+    axios
+      .delete(`${BASE_URL}/chat/delete/${id}`)
+      .then(() => {
+        setLoading(false);
+        navigate("/chat/chats");
+      })
+      .catch((error) => {
+        setLoading(false);
+
+        console.log(error);
+      });
+  };
+  return (
+    <div className="Delete_parent">
+      <div className="Delete_parent_leftpanel">
+        <BackButtonP />
+      </div>
+      <div className="Delete_parent_middlepanel">
+        <div className="Delete_parent_middlepanel_verify text-black">
+          Are you sure you want to delete this?
+        </div>
+        <button className="Delete_parent_middlepanel_button" onClick={DeleteF}>
+          Delete
+        </button>
+        <div className="Delete_parent_middlepanel_operations">
+          <Link className="delete" to={`/chat/getchat/${id}`}>
+            <BsInfoCircle className="" />
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Delete;
